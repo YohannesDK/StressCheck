@@ -42,7 +42,9 @@ function App() {
   useEffect(() => {
     if (!started) return;
 
-    const eventSource = new EventSource('/api/stream_bpm');
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "";
+    const eventSource = new EventSource(`${backendUrl}/api/stream_bpm`);
+
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
