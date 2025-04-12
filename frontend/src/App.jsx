@@ -41,26 +41,28 @@ function App() {
   useEffect(() => {
     if (!started) return;
 
-    const fetchHeartbeat = async () => {
-      try {
-        const response = await fetch('/api/heartbeat');
-        const data = await response.json();
-        const now = new Date().toLocaleTimeString();
+    const eventSource = new EventSource('/api/stream_bpm');
 
-        setCurrentBpm(data.bpm);
-        setBpmData(prev => [...prev.slice(-19), data.bpm]);
-        setTimestamps(prev => [...prev.slice(-19), now]);
-      } catch (error) {
-        console.error('Error fetching heartbeat:', error);
-      }
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const now = new Date().toLocaleTimeString();
+      
+      setCurrentBpm(data.bpm);
+      setBpmData(prev => [...prev.slice(-19), data.bpm]);
+      setTimestamps(prev => [...prev.slice(-19), now]);
     };
 
-    fetchHeartbeat();
-    const interval = setInterval(fetchHeartbeat, 1000);
+    eventSource.onerror = (err) => {
+      console.error('EventSource failed:', err);
+      eventSource.close();
+    };
 
-    return () => clearInterval(interval);
+    return () => {
+      eventSource.close();
+    };
   }, [started]);
 
+  // play background musicstart music
   useEffect(() => {
     if (!started) return;
 
