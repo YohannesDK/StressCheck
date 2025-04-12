@@ -1,4 +1,4 @@
-# \u26a1 StressCheck
+# StressCheck
 
 **StressCheck** is a live heart rate monitoring app built to track real-time stress levels during the epic **Real Madrid vs Arsenal** second leg match.  
 It captures heart BPM from a **Garmin watch** via **Bluetooth**, streams the data through a lightweight backend, and visualizes it with a dynamic frontend.
