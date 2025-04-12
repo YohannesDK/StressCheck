@@ -1,19 +1,24 @@
 # StressCheck
 
 **StressCheck** is a live heart rate monitoring app built to track real-time stress levels during the epic **Real Madrid vs Arsenal** second leg match.  
-It captures heart BPM from a **Garmin watch** via **Bluetooth**, streams the data through a lightweight backend, and visualizes it with a dynamic frontend.
+It captures heart BPM from a **Polar H9 chest strap** via **Bluetooth**, streams the data through a lightweight backend, and visualizes it with a dynamic frontend.
 
 Whether you're chilled, stressed, or completely losing it — StressCheck shows it live! ❤️🔥
+
+![StressCheck Screenshot](/appimg.png)
+
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge)](https://stress-check-eight.vercel.app)
+![Frontend](https://img.shields.io/badge/Frontend-Vercel-success?style=for-the-badge&logo=vercel)
+![Backend](https://img.shields.io/badge/Backend-Heroku-success?style=for-the-badge&logo=heroku)
+![Built with](https://img.shields.io/badge/Built%20with-React%20%7C%20Flask-blue?style=for-the-badge&logo=react)
 
 ---
 
 ## 🚀 Overview
 
-- **Heartbeat Service**: Connects to a Garmin watch via Bluetooth (or mocks data) and sends live BPM data.
-- **Flask Backend API**: Receives BPM data and streams it in real-time using Server-Sent Events (SSE).
-- **React Frontend**: Displays heart rate trends, stress levels, emojis, and music.
-
-> **Current Setup:** Mock BPM data is generated locally until the Garmin device is connected.
+- **Heartbeat Service**: Connects to a Polar H9 via Bluetooth (or mocks data) and sends live BPM.
+- **Flask Backend API**: Receives BPM data and streams it in real-time via Server-Sent Events (SSE).
+- **React Frontend**: Displays heart rate, stress levels, emojis, and background music.
 
 ---
 
@@ -21,9 +26,9 @@ Whether you're chilled, stressed, or completely losing it — StressCheck shows 
 
 ```mermaid
 flowchart TD
-    A[Garmin Watch (Bluetooth)] --> B(Heartbeat Service - Local PC)
+    A[Polar H9 (Bluetooth)] --> B(Heartbeat Service - Local PC)
     B -->|POST bpm data| C(Flask Backend API - Hosted on Heroku)
-    C -->|Server-Sent Events (SSE)| D(React Frontend - Hosted on Vercel/Netlify)
+    C -->|Server-Sent Events (SSE)| D(React Frontend - Hosted on Vercel)
 
     subgraph Local Machine
       B
@@ -42,8 +47,8 @@ flowchart TD
 ```
 /
 ├── backend/       # Flask backend API (Heroku deployed)
-├── frontend/      # React frontend (Vercel or Netlify deployed)
-├── heartbeat/     # Local Heartbeat service (mocking or reading Garmin BPM)
+├── frontend/      # React frontend (Vercel deployed)
+├── heartbeat/     # Heartbeat service (mock or real BPM)
 ├── README.md
 ```
 
@@ -64,6 +69,7 @@ pip install -r requirements.txt
 
 # Run backend locally
 python app.py
+
 ```
 App available at:  
 ➡️ `http://localhost:5000`
@@ -80,7 +86,7 @@ npm run dev
 Frontend available at:  
 ➡️ `http://localhost:5173`
 
-(You'll need to adjust the API base URL if developing locally)
+Make sure to set VITE_BACKEND_URL correctly if needed.
 
 ---
 
@@ -88,7 +94,7 @@ Frontend available at:
 
 ```bash
 cd heartbeat
-pip install requests
+pip install requests, bleak
 
 # Run locally (send to localhost backend)
 python service.py
@@ -97,7 +103,8 @@ python service.py
 python service.py --remote
 ```
 
-✅ `--remote` flag sends BPMs to Heroku instead of localhost.
+✅ `--remote` flag sends BPMs to Heroku instead of localhost. <br>
+✅ `--mock` send mock data instead, if you dont have BPM data avaible
 
 ---
 
@@ -166,18 +173,6 @@ web: gunicorn app:app
 
 - Backend uses **Server Sent Events (SSE)** for real-time updates.
 - Frontend uses **EventSource** to stream live BPM updates.
-- Heartbeat service currently mocks BPM data; Garmin device integration coming soon.
+- Heartbeat service can sends either real or mock bpm data to the backend in heroku.
 
 ---
-
-# 💪 Status: 
-✅ Backend deployed  
-✅ Frontend ready  
-✅ Heartbeat service live  
-✅ Real-time graph running
-
----
-
-# 🏆 StressCheck
-
-**See your heart racing when it matters!** ❤️🔥🏟️️
