@@ -1,31 +1,36 @@
-import time
 import requests
-from bpm_reader import get_mock_bpm
+import random
+import time
+import argparse
 
-# 📡 Config
-BACKEND_API_URL = "http://localhost:5000/api/update_bpm"  # Update for production if needed
+# 🌍 Configuration
+LOCAL_BACKEND_URL = "http://localhost:5000/api/update_bpm"
+HEROKU_BACKEND_URL = "https://stresscheck-server-c4dba76a1545.herokuapp.com/api/update_bpm"
 
-def send_bpm_to_server(bpm):
-    """Send BPM data to the backend API."""
-    payload = {
-        "bpm": bpm,
-        "timestamp": time.time()
-    }
-    try:
-        response = requests.post(BACKEND_API_URL, json=payload)
-        if response.status_code == 200:
-            print(f"✅ Sent BPM: {bpm} at {time.strftime('%H:%M:%S')}")
-        else:
-            print(f"⚠️ Failed to send BPM. Status code: {response.status_code}")
-    except Exception as e:
-        print(f"❌ Error sending BPM:", e)
+def send_mock_bpm(is_local: bool):
+    backend_url = LOCAL_BACKEND_URL if is_local else HEROKU_BACKEND_URL
+    print(f"🌍 Sending BPMs to: {backend_url}")
 
-def main():
-    print("🚀 Heartbeat service started.")
     while True:
-        bpm = get_mock_bpm()  # 🎯 Read from bpm_reader
-        send_bpm_to_server(bpm)
-        time.sleep(1)  # Send every 1 second
+        bpm = random.randint(60, 130)  # mock realistic heart rates
+        try:
+            response = requests.post(backend_url, json={"bpm": bpm})
+            print(f"✅ Sent BPM {bpm}: {response.status_code} - {response.text}")
+        except Exception as e:
+            print(f"Error sending BPM: {e}")
+
+        time.sleep(2)  # Send a new BPM every 2 seconds
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Mock Heartbeat Sender for StressCheck")
+    parser.add_argument(
+        "--remote", 
+        action="store_true", 
+        help="Send BPMs to remote Heroku backend instead of local backend"
+    )
+    args = parser.parse_args()
+
+    is_local = not args.remote  # Default is_local = True unless --remote is passed
+
+    send_mock_bpm(is_local)
+
