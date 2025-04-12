@@ -13,6 +13,10 @@ latest_bpm = {
     "timestamp": None
 }
 
+@app.route("/")
+def home():
+    return "StressCheck Backend is Alive! 🚀"
+
 # Frontend fetches BPM using SSE
 @app.route('/api/stream_bpm')
 def stream_bpm():
