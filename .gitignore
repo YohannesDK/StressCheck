@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+
+# Environment variables
+.env
+
+# VS Code settings (optional)
+.vscode/
+
+# MacOS weird files (optional)
+.DS_Store
+
