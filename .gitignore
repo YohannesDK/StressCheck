@@ -15,3 +15,15 @@ venv/
 # MacOS weird files (optional)
 .DS_Store
 
+
+# Node.js / React (frontend)
+node_modules/
+dist/
+build/
+
+# Environment variables
+.env
+.env.*
+
+# Logs
+*.log
