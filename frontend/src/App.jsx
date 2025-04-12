@@ -26,13 +26,14 @@ function App() {
   const [bpmData, setBpmData] = useState([]);
   const [timestamps, setTimestamps] = useState([]);
   const [currentBpm, setCurrentBpm] = useState(null);
+  const [lastUpdated, setLastUpdated] = useState(null); // 🆕
   const [started, setStarted] = useState(false);
 
   const getStressLevel = (bpm) => {
     if (bpm === null) return { text: 'Loading...', emoji: '⏳', color: '#a4865f' };
-    if (bpm < 80) return { text: 'Chill', emoji: '😌', color: '#a4865f' };
-    if (bpm >= 80 && bpm <= 100) return { text: 'Shit..', emoji: '😰', color: '#a4865f' };
-    if (bpm > 100) return { text: 'AYOOOOO', emoji: '😱', color: '#a4865f' };
+    if (bpm < 70) return { text: 'Chill', emoji: '😌', color: '#a4865f' };
+    if (bpm >= 70 && bpm <= 90) return { text: 'Shit..', emoji: '😰', color: '#a4865f' };
+    if (bpm > 90) return { text: 'AYOOOOO', emoji: '😱', color: '#a4865f' };
     return { text: 'Unknown', emoji: '❓', color: '#a4865f' };
   };
 
@@ -45,11 +46,12 @@ function App() {
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      const now = new Date().toLocaleTimeString();
+      const now = new Date();
       
       setCurrentBpm(data.bpm);
       setBpmData(prev => [...prev.slice(-19), data.bpm]);
-      setTimestamps(prev => [...prev.slice(-19), now]);
+      setTimestamps(prev => [...prev.slice(-19), now.toLocaleTimeString()]);
+      setLastUpdated(now.toLocaleTimeString()); // 🆕 update timestamp
     };
 
     eventSource.onerror = (err) => {
@@ -113,97 +115,133 @@ function App() {
     },
   };
 
-  return (
+return (
+  <div
+    style={{
+      width: '100%',
+      minHeight: '100vh',
+      position: 'relative',
+      overflow: 'hidden',
+      backgroundImage: 'url("/defaultbackground.jpg")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }}
+  >
+    {/* 🎵 Hidden Audio */}
+    <audio id="bg-music" loop src="/North-London-Forever.mp3" style={{ display: 'none' }} />
+
+    {/* 🛡️ Badges */}
+    <div style={{
+      position: 'absolute',
+      top: '50%',
+      left: 0,
+      right: 0,
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '0 3rem', // ← more padding around badges
+      transform: 'translateY(-50%)',
+      zIndex: 2,
+    }}>
+      {/* <img src="/madrid.png" alt="Real Madrid" style={{ height: '12vh', margin: '1rem' }} />
+      <img src="/arsenal.png" alt="Arsenal" style={{ height: '10vh', margin: '1rem' }} /> */}
+      <img 
+        src="/madrid.png" 
+        alt="Real Madrid" 
+        style={{ 
+          width: '10vw', 
+          minWidth: '50px', 
+          height: 'auto',    // ✅ Important to make it proportional
+          margin: '1rem',
+          objectFit: 'contain',
+        }} 
+      />
+      <img 
+        src="/arsenal.png" 
+        alt="Arsenal" 
+        style={{ 
+          width: '12vw', 
+          minWidth: '50px', 
+          height: 'auto',    // ✅ Important to make it proportional
+          margin: '1rem',
+          objectFit: 'contain',
+        }} 
+      />
+    </div>
+
+    {/* Center Card */}
     <div
       style={{
         width: '75%',
         margin: 'auto',
-        minHeight: '70vh',
-        borderRadius: '20px',
-        overflow: 'hidden',
-        backgroundImage: 'url("/defaultbackground.jpg")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
+        marginTop: '8vh',
         padding: '2rem',
+        borderRadius: '20px',
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        backdropFilter: 'blur(4px)',
+        WebkitBackdropFilter: 'blur(4px)',
+        textAlign: 'center',
+        color: 'white',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
         position: 'relative',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+        zIndex: 3,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
       }}
     >
-      {/* Blurred overlay */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backdropFilter: 'blur(2px)',
-          WebkitBackdropFilter: 'blur(2px)',
-          backgroundColor: 'rgba(0, 0, 0, 0.15)',
-          zIndex: 0,
-        }}
-      />
-
-
-      {/* Main Content */}
-      <div style={{ maxWidth: '80%', margin: 'auto', textAlign: 'center', color: 'white', zIndex: 1, position: 'relative' }}>
-        {/* 🎵 Hidden Audio */}
-        <audio id="bg-music" loop src="/North-London-Forever.mp3" style={{ display: 'none' }} />
-
-        {/* 🛡️ Badges + Center Content */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4rem', marginBottom: '2rem' }}>
-          <img src="/madrid.png" alt="Real Madrid" style={{ height: '11vh' }} />
-
-          {/* Middle part: Button or Stress Info */}
-          <div>
-            {!started ? (
-              <button
-                onClick={() => setStarted(true)}
-                className='start-button' 
-                style={{
-                  fontSize: '1.5rem',
-                  padding: '1rem 2rem',
-                  borderRadius: '12px',
-                  border: 'none',
-                  backgroundColor: 'rgb(157 102 60 / 85%)',
-                  color: 'white',
-                  cursor: 'pointer',
-                }}
-              >
-                Lever karen?
-              </button>
-            ) : (
+      <div>
+        {!started ? (
+          <button
+            onClick={() => setStarted(true)}
+            className='start-button'
+            style={{
+              fontSize: '1.5rem',
+              padding: '1rem 2rem',
+              borderRadius: '12px',
+              border: 'none',
+              backgroundColor: 'rgb(157 102 60 / 85%)',
+              color: 'white',
+              cursor: 'pointer',
+            }}
+          >
+            Lever karen?
+          </button>
+        ) : (
+          <>
+            {currentBpm !== null && (
               <>
-                {currentBpm !== null && (
-                  <>
-                    <div style={{ minWidth: '10rem', marginBottom: '0.5rem', fontSize: '2rem', fontWeight: 'bold', textShadow: '2px 2px 6px rgba(0,0,0,0.8)' }}>
-                      {stress.text} {stress.emoji}
-                    </div>
+                <div style={{ marginBottom: '0.5rem', fontSize: '2rem', fontWeight: 'bold', textShadow: '2px 2px 6px rgba(0,0,0,0.8)' }}>
+                  {stress.text} {stress.emoji}
+                </div>
 
-                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold', textShadow: '2px 2px 6px rgba(0,0,0,0.8)' }}>
-                      ❤️ {currentBpm} BPM
-                    </div>
-                  </>
-                )}
+                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', textShadow: '2px 2px 6px rgba(0,0,0,0.8)' }}>
+                  ❤️ {currentBpm} BPM
+                </div>
               </>
             )}
-          </div>
-
-          <img src="/arsenal.png" alt="Arsenal" style={{ height: '9vh' }} />
-        </div>
-
-        {/* 📈 Graph */}
-        {started && (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: 'fit-content', padding: '1rem' }}>
-            <div style={{ width: '80%', backgroundColor: '#563d2759', borderRadius: '16px', padding: '1rem' }}>
-              <Line data={chartData} options={chartOptions} />
-            </div>
-          </div>
+          </>
         )}
       </div>
+
+      {/* 🔥 Updated "last updated" moved to bottom-right */}
+      {lastUpdated && (
+        <div style={{
+          fontSize: '1rem',
+          fontWeight: 'normal',
+          opacity: 0.8,
+          textAlign: 'right',
+          marginTop: '1rem',
+        }}>
+          Updated at: {lastUpdated}
+        </div>
+      )}
     </div>
-  );
+  </div>
+);
+
+
 }
 
 export default App;
