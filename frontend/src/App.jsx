@@ -31,9 +31,15 @@ function App() {
 
   const getStressLevel = (bpm) => {
     if (bpm === null) return { text: 'Loading...', emoji: '⏳', color: '#a4865f' };
-    if (bpm < 70) return { text: 'Chill', emoji: '😌', color: '#a4865f' };
-    if (bpm >= 70 && bpm <= 90) return { text: 'Shit..', emoji: '😰', color: '#a4865f' };
-    if (bpm > 90) return { text: 'AYOOOOO', emoji: '😱', color: '#a4865f' };
+
+    if (bpm < 70) return { text: 'Chill. Breathing. Normal.', emoji: '😌', color: '#a4865f' };
+    if (bpm < 80) return { text: 'Okay. Just watching. Nothing’s happening.', emoji: '😐', color: '#a4865f' };
+    if (bpm < 90) return { text: 'Bit tense. But I’m fine.', emoji: '😶‍🌫️', color: '#a4865f' };
+    if (bpm < 105) return { text: 'This is getting uncomfortable.', emoji: '😰', color: '#a4865f' };
+    if (bpm < 114) return { text: 'Ref… REF?! Are you blind?', emoji: '🧑‍⚖️', color: '#a4865f' };
+    if (bpm < 120) return { text: 'AYOOOOO', emoji: '😱', color: '#a4865f' };
+    if (bpm >= 130) return { text: 'I don’t feel good. Genuinely.', emoji: '🥴', color: '#a4865f' };
+
     return { text: 'Unknown', emoji: '❓', color: '#a4865f' };
   };
 
