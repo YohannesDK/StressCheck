@@ -154,11 +154,12 @@ return (
     }}>
       {/* <img src="/madrid.png" alt="Real Madrid" style={{ height: '12vh', margin: '1rem' }} />
       <img src="/arsenal.png" alt="Arsenal" style={{ height: '10vh', margin: '1rem' }} /> */}
+      
       <img 
-        src="/madrid.png" 
-        alt="Real Madrid" 
+        src="/arsenal.png" 
+        alt="Arsenal" 
         style={{ 
-          width: '10vw', 
+          width: '12vw', 
           minWidth: '50px', 
           height: 'auto',    // ✅ Important to make it proportional
           margin: '1rem',
@@ -166,10 +167,10 @@ return (
         }} 
       />
       <img 
-        src="/arsenal.png" 
-        alt="Arsenal" 
+        src="/psg.png" 
+        alt="PSG" 
         style={{ 
-          width: '12vw', 
+          width: '10vw', 
           minWidth: '50px', 
           height: 'auto',    // ✅ Important to make it proportional
           margin: '1rem',
